@@ -1,0 +1,166 @@
+{
+    "title": "Order Items",
+    "description": "All order items fetched from orders",
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+      "OrderId": { "type": "string" },
+      "ASIN": { "type": "string" },
+      "SellerSKU": { "type": "string" },
+      "OrderItemId": { "type": "string" },
+      "Title": { "type": "string" },
+      "QuantityOrdered": { "type": "integer" },
+      "QuantityShipped": { "type": "integer" },
+      "ProductInfo": {
+        "type": "object",
+        "properties": {
+          "NumberOfItems": { "type": "integer" }
+        }
+      },
+      "PointsGranted": {
+        "type": "object",
+        "properties": {
+          "PointsNumber": { "type": "integer" },
+          "PointsMonetaryValue": {
+            "type": "object",
+            "properties": {
+              "CurrencyCode": { "type": "string" },
+              "Amount": { "type": "string" }
+            }
+          }
+        }
+      },
+      "ItemPrice": {
+        "type": "object",
+        "properties": {
+          "CurrencyCode": { "type": "string" },
+          "Amount": { "type": "string" }
+        }
+      },
+      "ShippingPrice": {
+        "type": "object",
+        "properties": {
+          "CurrencyCode": { "type": "string" },
+          "Amount": { "type": "string" }
+        }
+      },
+      "ItemTax": {
+        "type": "object",
+        "properties": {
+          "CurrencyCode": { "type": "string" },
+          "Amount": { "type": "string" }
+        }
+      },
+      "ShippingTax": {
+        "type": "object",
+        "properties": {
+          "CurrencyCode": { "type": "string" },
+          "Amount": { "type": "string" }
+        }
+      },
+      "ShippingDiscount": {
+        "type": "object",
+        "properties": {
+          "CurrencyCode": { "type": "string" },
+          "Amount": { "type": "string" }
+        }
+      },
+      "ShippingDiscountTax": {
+        "type": "object",
+        "properties": {
+          "CurrencyCode": { "type": "string" },
+          "Amount": { "type": "string" }
+        }
+      },
+      "PromotionDiscount": {
+        "type": "object",
+        "properties": {
+          "CurrencyCode": { "type": "string" },
+          "Amount": { "type": "string" }
+        }
+      },
+      "PromotionDiscountTax": {
+        "type": "object",
+        "properties": {
+          "CurrencyCode": { "type": "string" },
+          "Amount": { "type": "string" }
+        }
+      },
+      "PromotionIds": {
+        "type": "array",
+        "items": { "type": "string" }
+      },
+      "CODFee": {
+        "type": "object",
+        "properties": {
+          "CurrencyCode": { "type": "string" },
+          "Amount": { "type": "string" }
+        }
+      },
+      "CODFeeDiscount": {
+        "type": "object",
+        "properties": {
+          "CurrencyCode": { "type": "string" },
+          "Amount": { "type": "string" }
+        }
+      },
+      "IsGift": { "type": "boolean" },
+      "ConditionNote": { "type": "string" },
+      "ConditionId": { "type": "string" },
+      "ConditionSubtypeId": { "type": "string" },
+      "ScheduledDeliveryStartDate": { "type": "string" },
+      "ScheduledDeliveryEndDate": { "type": "string" },
+      "PriceDesignation": { "type": "string" },
+      "TaxCollection": {
+        "type": "object",
+        "properties": {
+          "Model": { "type": "string" },
+          "ResponsibleParty": { "type": "string" }
+        }
+      },
+      "SerialNumberRequired": { "type": "boolean" },
+      "IsTransparency": { "type": "boolean" },
+      "IossNumber": { "type": "string" },
+      "StoreChainStoreId": { "type": "string" },
+      "DeemedResellerCategory": { "type": "string" },
+      "BuyerInfo": {
+        "type": "object",
+        "properties": {
+          "BuyerCustomizedInfo": {
+            "type": "object",
+            "properties": {
+              "CustomizedURL": { "type": "string" }
+            }
+          },
+          "GiftWrapPrice": {
+            "type": "object",
+            "properties": {
+              "CurrencyCode": { "type": "string" },
+              "Amount": { "type": "string" }
+            }
+          },
+          "GiftWrapTax": {
+            "type": "object",
+            "properties": {
+              "CurrencyCode": { "type": "string" },
+              "Amount": { "type": "string" }
+            }
+          },
+          "GiftMessageText": { "type": "string" },
+          "GiftWrapLevel": { "type": "string" }
+        }
+      },
+      "BuyerRequestedCancel": {
+        "type": "object",
+        "properties": {
+          "IsBuyerRequestedCancel": { "type": "boolean" },
+          "BuyerCancelReason": { "type": "string" }
+        }
+      },
+      "SerialNumbers": {
+        "type": "array",
+        "items": { "type": "string" }
+      }
+    }
+  }
+  

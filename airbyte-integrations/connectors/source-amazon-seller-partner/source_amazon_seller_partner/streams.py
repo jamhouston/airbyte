@@ -800,7 +800,7 @@ class Orders(IncrementalAmazonSPStream):
             return self.default_backoff_time
 
 class OrderItems(IncrementalAmazonSPStream):
-    name = "Order Items"
+    name = "OrderItems"
     primary_key = "OrderItemId"
     cursor_field = "LastUpdateDate"
     replication_start_date_field = "LastUpdatedAfter"
@@ -826,6 +826,17 @@ class OrderItems(IncrementalAmazonSPStream):
         
         for order_record in orders.read_records(sync_mode=kwargs.get("sync_mode", SyncMode.full_refresh)):
             yield {"order_id": order_record["AmazonOrderId"]}
+
+    def parse_response(
+        self, response: requests.Response, stream_state: Mapping[str, Any] = None, stream_slice: Mapping[str, Any] = None, **kwargs
+    ) -> Iterable[Mapping]:
+        orderItemsList = response.json().get(self.data_field, {})
+        amazonOrderId = orderItemsList['AmazonOrderId']
+        orderItems = orderItemsList['OrderItems']
+        
+        for orderItem in orderItems:
+            orderItem["OrderId"] = amazonOrderId
+            yield orderItem
 
     def get_updated_state(self, current_stream_state: MutableMapping[str, Any], latest_record: Mapping[str, Any]) -> Mapping[str, Any]:
         current_stream_state = current_stream_state or {}
