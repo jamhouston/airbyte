@@ -773,6 +773,10 @@ class Orders(IncrementalAmazonSPStream):
     page_size_field = "MaxResultsPerPage"
     default_backoff_time = 60
 
+    @property
+    def use_cache(self) -> bool:
+        return True
+    
     def path(self, **kwargs) -> str:
         return f"orders/{ORDERS_API_VERSION}/orders"
 
@@ -794,6 +798,42 @@ class Orders(IncrementalAmazonSPStream):
             return 1 / float(rate_limit)
         else:
             return self.default_backoff_time
+
+class OrderItems(IncrementalAmazonSPStream):
+    name = "Order Items"
+    primary_key = "OrderItemId"
+    cursor_field = "LastUpdateDate"
+    replication_start_date_field = "LastUpdatedAfter"
+    replication_end_date_field = "LastUpdatedBefore"
+    next_page_token_field = "NextToken"
+    page_size_field = "MaxResultsPerPage"
+    default_backoff_time = 60
+    
+    def path(self, stream_slice: Optional[Mapping[str, Any]] = None, **kwargs) -> str:
+        return f"orders/{ORDERS_API_VERSION}/orders/{stream_slice['order_id']}/orderItems"
+    
+    def request_params(
+        self, stream_state: Mapping[str, Any], next_page_token: Mapping[str, Any] = None, **kwargs
+    ) -> MutableMapping[str, Any]:
+        params = super().request_params(stream_state=stream_state, next_page_token=next_page_token, **kwargs)
+        return params
+    
+    def stream_slices(self, stream_state: Mapping[str, Any] = None, **kwargs) -> Iterable[Optional[Mapping[str, any]]]:
+        orders = Orders(url_base=self.url_base, 
+                        aws_signature=self.aws_signature, 
+                        marketplace_id=self.marketplace_id, 
+                        replication_start_date=stream_state[self.cursor_field])
+        
+        for order_record in orders.read_records(sync_mode=kwargs.get("sync_mode", SyncMode.full_refresh)):
+            yield {"order_id": order_record["AmazonOrderId"]}
+
+    def get_updated_state(self, current_stream_state: MutableMapping[str, Any], latest_record: Mapping[str, Any]) -> Mapping[str, Any]:
+        current_stream_state = current_stream_state or {}
+        current_stream_state[self.cursor_field] = max(
+            latest_record[self.cursor_field], current_stream_state.get(self.cursor_field, self._start_ts)
+        )
+
+        return current_stream_state
 
 
 class LedgerDetailedViewReports(IncrementalReportsAmazonSPStream):
