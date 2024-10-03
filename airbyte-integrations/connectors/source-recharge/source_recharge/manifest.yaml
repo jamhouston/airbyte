@@ -153,6 +153,20 @@ definitions:
         type: RequestOption
         field_name: "updated_at_min"
         inject_into: request_parameter
+  base_incremental_event_stream:
+    $ref: "#/definitions/base_modern_api_stream"
+    incremental_sync:
+      type: CustomIncrementalSync
+      class_name: source_recharge.components.datetime_based_cursor.RechargeDateTimeBasedCursor
+      cursor_field: "created_at"
+      cursor_datetime_formats:
+        - "%Y-%m-%dT%H:%M:%S%z"
+        - "%Y-%m-%dT%H:%M:%S"
+      datetime_format: "%Y-%m-%dT%H:%M:%S%z"
+      start_datetime:
+        type: MinMaxDatetime
+        datetime: "{{ config['start_date'] }}"
+        datetime_format: "%Y-%m-%dT%H:%M:%SZ"
 
   # FULL-REFRESH STREAMS
   # COLLECTIONS
@@ -250,6 +264,13 @@ definitions:
     $parameters:
       name: "subscriptions"
       data_path: "subscriptions"
+  events_stream:
+    description: >-
+      Events Stream: https://developer.rechargepayments.com/2021-11/events/events_list
+    $ref: "#/definitions/base_incremental_event_stream"
+    $parameters:
+      name: "events"
+      data_path: "events"
 
 streams:
   - "#/definitions/addresses_stream"
@@ -262,6 +283,7 @@ streams:
   - "#/definitions/products_stream"
   - "#/definitions/shop_stream"
   - "#/definitions/subscriptions_stream"
+  - "#/definitions/events_stream"
   # The `orders` stream remains implemented in `streams.py` due to:
   # 1. Inability to resolve `$ref` conditionally
   # 2. Inability to dynamically switch between paginators (diff api versions, require diff pagination approach) (or create the CustomPaginator component)
